@@ -1,0 +1,51 @@
+{
+    "created_at": {
+        "type": "datetime"
+    },
+    "updated_at": {
+        "type": "datetime"
+    },
+    "deleted": {
+        "type": "boolean",
+        "default": false
+    },
+    "deleted_at": {
+        "type": "datetime"
+    },
+    "id": {
+        "type": "number",
+        "primary": true
+    },
+    "ma": {
+        "type": "string",
+        "length": 255
+    },
+    "ghichu": {
+        "type": "string",
+        "length": 255
+    },
+    "khachhang_id": {
+        "type": "number",
+        "required": true
+    },
+    "tenkhachhang": {
+        "type": "string",
+        "length": 255
+    },
+    "ngaymua": {
+        "type": "datetime"
+    },
+    "thanhtien": {
+        "type": "number"
+    },
+    "vat": {
+        "default": 10,
+        "type": "number"
+    },
+    "tongtien": {
+        "type": "number"
+    },
+    "chitiethoadon": {
+        "type": "list"
+    }
+}
