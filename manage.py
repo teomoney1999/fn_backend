@@ -149,4 +149,5 @@ def create_admin(password='123456'):
     return
 
 if __name__ == '__main__':
-    manager.main()
+    # manager.main()
+    run()
