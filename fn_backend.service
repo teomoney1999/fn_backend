@@ -4,7 +4,6 @@ After=syslog.target
 
 [Service]
 Type=simple
-User=teomoney_vsp
 WorkingDirectory=/home/teomoney_vsp/code/fn_backend/repo/
 ExecStart=/home/teomoney_vsp/code/fn_backend/bin/python manage.py run
 Restart=on-failure
