@@ -1,0 +1,19 @@
+[Unit]
+Description=Financial Management App
+After=syslog.target
+
+[Service]
+Type=simple
+User=teomoney_vsp
+WorkingDirectory=/home/teomoney_vsp/code/fn_backend
+ExecStart=/home/teomoney_vsp/code/fn_backend/bin/python manage.py run
+Restart=on-failure
+PrivateTmp=true
+RestartSec=5
+StandardOutput=syslog
+StandardError=syslog
+
+[Install]
+WantedBy=multi-user.target
+
+#place in to /etc/systemd/system

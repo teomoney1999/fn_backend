@@ -57,7 +57,7 @@ async def user_current_user(request):
     #     return json({"error_code": "NOT_FOUND", "error_message": "User not found"}, status=520)
     # return json({"error_code": "UNKNOWN", "error_message": "Unknown error"}, status=520)
 
-
+exclude_columns = ["password", "salt"]
 
 async def pre_create_user(request=None, data=None, **kw): 
     print("data", data)
@@ -142,7 +142,6 @@ apimanager.create_api(collection_name="role", model= Role,
 async def post_create_userinfo(request=None, result=None, **kw): 
     print("result", result)
     # Excluding columns
-    exclude_columns = ["password", "salt"]
     if "user" in result:
         user = result["user"]
         for col in exclude_columns: 
@@ -153,12 +152,14 @@ async def pre_get_userinfo(request=None, search_params=None, **kw):
     token = request.args.get('token')
     # print("request", request.headers)
     if token: 
+        print("token\n", token)
         user_info = UserInfo.query.filter(UserInfo.user_id == token).first()
+        print("name", user_info.fullname)
         search_params['filter'] = {"id": {"$eq" : user_info.id}}
 
 async def post_get_userinfo(request=None, result=None, **kw): 
     # Excluding columns
-    exclude_columns = ["password", "salt"]
+    # exclude_columns = ["password", "salt"]
     user_info = result.get('objects')
     if user_info: 
         for info in user_info: 
@@ -167,11 +168,19 @@ async def post_get_userinfo(request=None, result=None, **kw):
                 for col in exclude_columns: 
                     if col in user: 
                         del user[col]
+
+
+async def post_get_single_userinfo(request=None, result=None, **kw): 
+    user = result.get('user') 
+    if user: 
+        for col in exclude_columns: 
+            if col in user: 
+                del user[col]
     
 
 apimanager.create_api(collection_name='userinfo', model=UserInfo,
                       methods=['GET', 'POST', 'DELETE', 'PUT'],
                       url_prefix='/api/v1',
                       preprocess=dict(GET_SINGLE=[], GET_MANY=[], POST=[], PUT_SINGLE=[]),
-                      postprocess=dict(GET_SINGLE=[], GET_MANY=[post_get_userinfo], POST=[post_create_userinfo], PUT_SINGLE=[])
+                      postprocess=dict(GET_SINGLE=[post_get_single_userinfo], GET_MANY=[post_get_userinfo], POST=[post_create_userinfo], PUT_SINGLE=[])
                       )
