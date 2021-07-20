@@ -29,7 +29,7 @@ async def pre_get_many_balance(request=None, search_params=None, **kw):
     
     else: 
         print("NOT HAVING FILTERS")
-          pass 
+        pass 
 
 async def post_get_many_balance(request=None, result=None, **kw): 
     print("result", result)
