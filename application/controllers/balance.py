@@ -23,7 +23,7 @@ async def pre_get_many_balance(request=None, search_params=None, **kw):
             return json({"error_code": "PARAM_ERROR", "error_message": Message.PARAM_ERROR}, status=520)
         search_params['filters'] = {"id": {"$eq": current_balance.id}}
     
-    elif user_id and not get_latest: 
+    elif user_id: 
         search_params['filters'] = {"user_id": {"$eq": user_id}}
 
 async def pre_post_balance(request=None, data=None, **kw): 
