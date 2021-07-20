@@ -97,7 +97,7 @@ async def post_create_user(request=None, result=None, **kw):
 
             for key in info: 
                 if hasattr(user_info, key): 
-                    setattr(user_info, key, item.get(key))
+                    setattr(user_info, key, info.get(key))
             
             user_info.user_id = result.get("id")
 
