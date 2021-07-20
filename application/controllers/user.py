@@ -90,7 +90,7 @@ async def post_create_user(request=None, result=None, **kw):
     # CREATE USER INFO
     print("POST CREATE USER")
     info = request.json.get('userinfo')
-    print("info", userinfo)
+    print("info", info)
     if info:
         # for item in info: 
         user_info = UserInfo()
