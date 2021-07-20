@@ -152,10 +152,11 @@ async def pre_get_userinfo(request=None, search_params=None, **kw):
     token = request.args.get('token')
     # print("request", request.headers)
     if token: 
-        print("token\n", token)
-        user_info = UserInfo.query.filter(UserInfo.user_id == token).first()
-        print("name", user_info.fullname)
-        search_params['filter'] = {"id": {"$eq" : user_info.id}}
+
+        # print("token\n", token)
+        # user_info = UserInfo.query.filter(UserInfo.user_id == token).first()
+        # print("name", user_info.fullname)
+        search_params['filter'] = {"user_id": {"$eq" : token}}
 
 async def post_get_userinfo(request=None, result=None, **kw): 
     # Excluding columns
@@ -181,6 +182,6 @@ async def post_get_single_userinfo(request=None, result=None, **kw):
 apimanager.create_api(collection_name='userinfo', model=UserInfo,
                       methods=['GET', 'POST', 'DELETE', 'PUT'],
                       url_prefix='/api/v1',
-                      preprocess=dict(GET_SINGLE=[], GET_MANY=[], POST=[], PUT_SINGLE=[]),
+                      preprocess=dict(GET_SINGLE=[], GET_MANY=[pre_get_userinfo], POST=[], PUT_SINGLE=[]),
                       postprocess=dict(GET_SINGLE=[post_get_single_userinfo], GET_MANY=[post_get_userinfo], POST=[post_create_userinfo], PUT_SINGLE=[])
                       )
