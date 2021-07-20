@@ -80,7 +80,7 @@ class UserInfo(CommonModel):
 
     # Relationship
     user = db.relationship("User")
-    user_id = db.Column(String, db.ForeignKey('user.id'), index=True)
+    # user_id = db.Column(String, db.ForeignKey('user.id'), index=True)
 
 
 
