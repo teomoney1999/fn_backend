@@ -62,7 +62,7 @@ class User(CommonModel):
     roles = db.relationship("Role", secondary=roles_users, single_parent=True)
 
     userinfo = db.relationship('UserInfo', back_populates='user', cascade='all, delete-orphan')
-    userinfo_id = db.Column(String, db.ForeignKey('userinfo.id'), index=True)
+    # userinfo_id = db.Column(String, db.ForeignKey('userinfo.id'), index=True)
 
     # balance = db.relationship("Balance", cascade='all, delete-orphan')
 
@@ -79,7 +79,7 @@ class UserInfo(CommonModel):
 
 
     # Relationship
-    user = db.relationship("User", back_populates='userinfo', cascade='all, delete-orphan')
+    user = db.relationship("User", back_populates='userinfo')
     user_id = db.Column(String, db.ForeignKey('user.id'), index=True)
 
 
