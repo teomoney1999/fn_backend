@@ -49,15 +49,15 @@ def adjacency_model_ondelete_listener(mapper, connection, instance):
 
 class CommonModel(db.Model):
     __abstract__ = True
-    id = db.Column(UUID(as_uuid=True), index=True, primary_key=True, default=default_uuid)
+    id = db.Column(String, index=True, primary_key=True, default=default_uuid)
     created_at = db.Column(BigInteger, index=True, default=now_timestamp)
-    created_by = db.Column(UUID(as_uuid=True), nullable=True)
+    created_by = db.Column(String, index=True, nullable=True)
     # created_by_name = db.Column(String)
     updated_at = db.Column(BigInteger, index=True, default=now_timestamp)
-    updated_by = db.Column(UUID(as_uuid=True), nullable=True)
+    updated_by = db.Column(String, index=True, nullable=True)
     # updated_by_name = db.Column(String)
     deleted = db.Column(Boolean, default=False)
-    deleted_by = db.Column(UUID(as_uuid=True), nullable=True)
+    deleted_by = db.Column(String, index=True, nullable=True)
     deleted_at = db.Column(BigInteger, index=True, default=now_timestamp)
     # deleted_by_name = db.Column(String)
     # revision = db.Column(String(255))

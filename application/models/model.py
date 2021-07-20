@@ -48,8 +48,8 @@ from application.database.model import CommonModel, default_uuid
 
 # AUTH 
 roles_users = db.Table('roles_users',
-                       db.Column('user_id', UUID(as_uuid=True), db.ForeignKey('user.id', ondelete='cascade'), primary_key=True),
-                       db.Column('role_id', UUID(as_uuid=True), db.ForeignKey('role.id', onupdate='cascade'), primary_key=True))
+                       db.Column('user_id', String, db.ForeignKey('user.id', ondelete='cascade'), primary_key=True),
+                       db.Column('role_id', String, db.ForeignKey('role.id', onupdate='cascade'), primary_key=True))
 
 
 class UserInfo(CommonModel):
@@ -63,7 +63,7 @@ class UserInfo(CommonModel):
 
     # Relationship
     user = db.relationship("User")
-    user_id = db.Column(UUID(as_uuid=True), db.ForeignKey('user.id'))
+    user_id = db.Column(String, db.ForeignKey('user.id'), index=True)
 
 class User(CommonModel): 
     __tablename__ = 'user'
@@ -75,7 +75,7 @@ class User(CommonModel):
     roles = db.relationship("Role", secondary=roles_users, single_parent=True)
 
     userinfo = db.relationship('UserInfo', back_populates='user', cascade='all, delete-orphan')
-    # userinfo_id = db.Column(UUID(as_uuid=True), db.ForeignKey('userinfo.id'))
+    userinfo_id = db.Column(String, db.ForeignKey('userinfo.id'), index=True)
 
     # balance = db.relationship("Balance", cascade='all, delete-orphan')
 
@@ -100,7 +100,7 @@ class Balance(CommonModel):
 
     # Relationship
     # user = db.relationship("User")
-    user_id = db.Column(UUID(as_uuid=True), db.ForeignKey('user.id'), nullable=False, index=True)
+    user_id = db.Column(String, db.ForeignKey('user.id'), nullable=False, index=True)
 
 
 class Transaction(CommonModel): 
@@ -113,7 +113,7 @@ class Transaction(CommonModel):
     description = db.Column(String(255))
 
     # Relationship
-    user_id = db.Column(UUID(as_uuid=True), db.ForeignKey('user.id'), nullable=False, index=True)
+    user_id = db.Column(String, db.ForeignKey('user.id'), nullable=False, index=True)
 
 
 

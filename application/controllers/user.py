@@ -152,7 +152,6 @@ async def pre_get_userinfo(request=None, search_params=None, **kw):
     token = request.args.get('token')
     # print("request", request.headers)
     if token: 
-
         # print("token\n", token)
         # user_info = UserInfo.query.filter(UserInfo.user_id == token).first()
         # print("name", user_info.fullname)
