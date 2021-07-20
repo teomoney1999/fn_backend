@@ -19,6 +19,7 @@ async def pre_get_many_balance(request=None, search_params=None, **kw):
         current_balance = db.session.query(Balance) \
                             .filter(Balance.user_id == user_id) \
                             .order_by(Balance.created_at.desc()).first()
+        print("current_balance", current_balance)
         if not current_balance:
             return json({"error_code": "PARAM_ERROR", "error_message": Message.PARAM_ERROR}, status=520)
         search_params['filters'] = {"id": {"$eq": current_balance.id}}
