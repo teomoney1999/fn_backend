@@ -49,7 +49,7 @@ def adjacency_model_ondelete_listener(mapper, connection, instance):
 
 class CommonModel(db.Model):
     __abstract__ = True
-    id = db.Column(String, index=True, primary_key=True, default=default_uuid)
+    id = db.Column(String(255), index=True, primary_key=True, default=default_uuid)
     created_at = db.Column(BigInteger, index=True, default=now_timestamp)
     created_by = db.Column(String, index=True, nullable=True)
     # created_by_name = db.Column(String)
