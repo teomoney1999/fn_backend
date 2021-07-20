@@ -1,6 +1,6 @@
 import uuid
 from gatco.response import json, text
-# from gatco_apimanager.views.sqlalchemy.helpers import to_dict
+from gatco_apimanager.views.sqlalchemy.helpers import to_dict
 from application.server import app
 from application.database import db
 from application.extensions import auth, apimanager
@@ -17,6 +17,8 @@ async def pre_get_many_balance(request=None, search_params=None, **kw):
     if user_id and get_latest:
         # EXPENSIVE OPERATION
         print("user_id", user_id)
+        test_balance = db.session.query(Balance).filter(Balance.user_id == user_id).first()
+        print("test_balance", to_dict(test_balance))
         current_balance = db.session.query(Balance) \
                             .filter(Balance.user_id == user_id) \
                             .order_by(Balance.created_at.desc()).first()
