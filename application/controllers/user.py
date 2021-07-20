@@ -156,7 +156,7 @@ async def pre_get_userinfo(request=None, search_params=None, **kw):
         # print("token\n", token)
         # user_info = UserInfo.query.filter(UserInfo.user_id == token).first()
         # print("name", user_info.fullname)
-        search_params['filter'] = {"user_id": {"$eq" : token}}
+        search_params['filters'] = {"user_id": {"$eq" : token}}
 
 async def post_get_userinfo(request=None, result=None, **kw): 
     # Excluding columns
