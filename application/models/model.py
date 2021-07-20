@@ -52,19 +52,6 @@ roles_users = db.Table('roles_users',
                        db.Column('role_id', String, db.ForeignKey('role.id', onupdate='cascade'), primary_key=True))
 
 
-class UserInfo(CommonModel):
-    __tablename__ = 'userinfo'
-    fullname = db.Column(String(255))
-    email = db.Column(String(255))
-    gender = db.Column(String(255))
-    phone = db.Column(String(255))
-    img = db.Column(String(255)) 
-
-
-    # Relationship
-    user = db.relationship("User")
-    user_id = db.Column(String, db.ForeignKey('user.id'), index=True)
-
 class User(CommonModel): 
     __tablename__ = 'user'
     username =  db.Column(String(255), nullable=False, index=True)
@@ -80,6 +67,21 @@ class User(CommonModel):
     # balance = db.relationship("Balance", cascade='all, delete-orphan')
 
     # transaction = db.relationship("Transaction", cascade='all, delete-orphan')
+
+
+class UserInfo(CommonModel):
+    __tablename__ = 'userinfo'
+    fullname = db.Column(String(255))
+    email = db.Column(String(255))
+    gender = db.Column(String(255))
+    phone = db.Column(String(255))
+    img = db.Column(String(255)) 
+
+
+    # Relationship
+    user = db.relationship("User")
+    user_id = db.Column(String, db.ForeignKey('user.id'), index=True)
+
 
 
 
