@@ -79,7 +79,7 @@ class UserInfo(CommonModel):
 
 
     # Relationship
-    user = db.relationship("User", back_populates='userinfo', uselist=False)
+    # user = db.relationship("User", back_populates='userinfo', uselist=False)
     user_id = db.Column(String, db.ForeignKey('user.id'), index=True)
 
 

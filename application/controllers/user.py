@@ -89,22 +89,21 @@ async def pre_create_user(request=None, data=None, **kw):
 async def post_create_user(request=None, result=None, **kw): 
     # CREATE USER INFO
     print("POST CREATE USER")
-    infos = request.json.get('userinfo')
-    print("info", infos)
-    if infos:
-        for info in infos: 
-            user_info = UserInfo()
+    info = request.json.get('userinfo')
+    print("info", info)
+    if info:
+        user_info = UserInfo()
 
-            for key in info: 
-                if hasattr(user_info, key): 
-                    setattr(user_info, key, info.get(key))
-            
-            user_info.user_id = result.get("id")
+        for key in info: 
+            if hasattr(user_info, key): 
+                setattr(user_info, key, info.get(key))
+        
+        user_info.user_id = result.get("id")
 
-            db.session.add(user_info) 
-            db.session.flush()
+        db.session.add(user_info) 
+        db.session.flush()
 
-            print("USER INFO IS CREATED")
+        print("USER INFO IS CREATED")
 
 
     # CREATE BALANCE
