@@ -12,4 +12,7 @@ class Config(object):
 class Message(object): 
     LOGIN_FAILED = "Tài khoản không tồn tại hoặc thông tin đăng nhập không đúng"
     PARAM_ERROR = "Vui lòng kiểm tra lại thông tin trước khi lưu"
-    
+
+class AuthMessage(object): 
+    PASSWORD_LENGTH_ERROR = "", 
+    USERNAME_DUPLICATION_ERROR = "",

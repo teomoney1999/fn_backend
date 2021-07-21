@@ -3,7 +3,7 @@ from application.server import app
 from application.database import db
 from application.extensions import auth, apimanager
 
-from application.models.model import User, Role, UserInfo, Balance
+from application.models.model import User, Role, Balance
 
 from .helpers.auth_helper import generator_salt
 from .helpers.format_helper import to_dict
@@ -41,7 +41,7 @@ async def user_current_user(request):
     token = request.args.get('token')
     print("===token", token)
     if token: 
-        curr_user = db.session.query(UserInfo).filter(UserInfo.user_id == token).first()
+        curr_user = db.session.query(User).filter(User.user_id == token).first()
         if curr_user: 
             print(to_dict(curr_user))
             return json({
@@ -58,68 +58,80 @@ async def user_current_user(request):
     # return json({"error_code": "UNKNOWN", "error_message": "Unknown error"}, status=520)
 
 exclude_columns = ["password", "salt"]
-
+# POST
 async def pre_create_user(request=None, data=None, **kw): 
-    print("data", data)
     # Roles
     role_user = Role.query.filter(Role.name == "user").first(); 
-    if "roles" in data:
-        roles_list = []   
-        if len(data["roles"]) == 0:
-            #  default account has role user
-            roles_list.append(role_user)
-
-        for role in data['roles']: 
-            if role['name'] == role_user.name: 
-                roles_list.append(role_user)
-        
-        data['roles'] = roles_list
-    else: 
+    # default account has role user
+    if "roles" not in data: 
         data['roles'] = [role_user]
-    
-    # Encrypt password
-    if "password" in data and data["password"] is not None: 
-        data["salt"] = generator_salt()
-        data["password"] = auth.encrypt_password(data["password"], data["salt"])
-    
+     
+    # Password
+    if "password" not in data: 
+        return json({"error_code": "PARAM_ERROR", "error_message": Message.PARAM_ERROR}, status=520)
 
-    print("CREATED USER", data)
-    
+    if len(data["password"]) < 5: 
+        return json({"error_code": "PARAM_ERROR", "error_message": "Mật khẩu có định dạng chưa đúng"}, status=520)
 
+    data["salt"] = generator_salt()
+    data["password"] = auth.encrypt_password(data["password"], data["salt"])
+    
+    # Username
+    if "username" not in data: 
+        return json({"error_code": "PARAM_ERROR", "error_message": Message.PARAM_ERROR}, status=520)
+
+    if len(data["username"]) < 5: 
+        return json({"error_code": "PARAM_ERROR", "error_message": "Tên đăng nhập có định dạng chưa đúng"}, status=520)
+
+    checking_duplicate_user = db.session.query(User).filter(User.username == data['username']).first()
+    print("checking_duplicate_user", checking_duplicate_user)
+    if checking_duplicate_user: 
+        return json({"error_code": "PARAM_ERROR", "error_message": "Tên đăng nhập không được trùng nhau"}, status=520)
+
+    if "fullname" not in data: 
+        return json({"error_code": "PARAM_ERROR", "error_message": Message.PARAM_ERROR}, status=520)
+
+    if "gender" not in data: 
+        return json({"error_code": "PARAM_ERROR", "error_message": Message.PARAM_ERROR}, status=520)
+
+    # Email
+    if "email" not in data: 
+        return json({"error_code": "PARAM_ERROR", "error_message": Message.PARAM_ERROR}, status=520)
+    
+    email_checking = db.session.query(User).filter(User.email == data['email']).first()
+    if email_checking: 
+        return json({"error_code": "PARAM_ERROR", "error_message": "Email không được trùng nhau"}, status=520)
+
+    # Phone
+    if "phone" not in data: 
+        return json({"error_code": "PARAM_ERROR", "error_message": Message.PARAM_ERROR}, status=520)
+
+    phone_checking = db.session.query(User).filter(User.phone == data['phone']).first()
+    if phone_checking: 
+        return json({"error_code": "PARAM_ERROR", "error_message": "Số điện thoại không được trùng nhau"}, status=520)
+
+    
 async def post_create_user(request=None, result=None, **kw): 
-    # CREATE USER INFO
-    print("POST CREATE USER")
-    info = request.json.get('userinfo')
-    print("info", info)
-    if info:
-        user_info = UserInfo()
-
-        for key in info: 
-            if hasattr(user_info, key): 
-                setattr(user_info, key, info.get(key))
-        
-        user_info.user_id = result.get("id")
-
-        db.session.add(user_info) 
-        db.session.flush()
-
-        print("USER INFO IS CREATED")
-
+    user_id = result.get('id')
 
     # CREATE BALANCE
-    user_id = result.get("id")
-
     balance = Balance()
 
     balance.amount = 0
+    balance.is_current = True
     balance.user_id = user_id
 
     db.session.add(balance)
     db.session.flush()
 
-    db.session.commit()
-
     print("BALANCE IS CREATED, AMOUNT: 0")
+
+    db.session.commit()
+# PUT
+
+# GET
+def pre_get_many_user(request=None, search_params=None, **kw): 
+    pass
 
 apimanager.create_api(collection_name='user', model=User,
                       methods=['GET', 'POST', 'DELETE', 'PUT'],
@@ -136,50 +148,8 @@ apimanager.create_api(collection_name="role", model= Role,
                       preprocess=dict(GET_SINGLE=[], GET_MANY=[], POST=[], PUT_SINGLE=[]),
                       postprocess=dict(GET_SINGLE=[], GET_MANY=[], POST=[], PUT_SINGLE=[])                
                       )
+# POST
+async def pre_create_user(request=None, data=None, **kw): 
+    pass
 
-
-async def post_create_userinfo(request=None, result=None, **kw): 
-    print("result", result)
-    # Excluding columns
-    if "user" in result:
-        user = result["user"]
-        for col in exclude_columns: 
-            if col in user: 
-                del user[col]
-    
-async def pre_get_userinfo(request=None, search_params=None, **kw): 
-    token = request.args.get('token')
-    # print("request", request.headers)
-    if token: 
-        # print("token\n", token)
-        # user_info = UserInfo.query.filter(UserInfo.user_id == token).first()
-        # print("name", user_info.fullname)
-        search_params['filters'] = {"user_id": {"$eq" : token}}
-
-async def post_get_userinfo(request=None, result=None, **kw): 
-    # Excluding columns
-    # exclude_columns = ["password", "salt"]
-    user_info = result.get('objects')
-    if user_info: 
-        for info in user_info: 
-            if "user" in info:
-                user = info["user"]
-                for col in exclude_columns: 
-                    if col in user: 
-                        del user[col]
-
-
-async def post_get_single_userinfo(request=None, result=None, **kw): 
-    user = result.get('user') 
-    if user: 
-        for col in exclude_columns: 
-            if col in user: 
-                del user[col]
-    
-
-apimanager.create_api(collection_name='userinfo', model=UserInfo,
-                      methods=['GET', 'POST', 'DELETE', 'PUT'],
-                      url_prefix='/api/v1',
-                      preprocess=dict(GET_SINGLE=[], GET_MANY=[pre_get_userinfo], POST=[], PUT_SINGLE=[]),
-                      postprocess=dict(GET_SINGLE=[post_get_single_userinfo], GET_MANY=[post_get_userinfo], POST=[post_create_userinfo], PUT_SINGLE=[])
-                      )
+# PUT

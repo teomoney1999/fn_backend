@@ -58,29 +58,14 @@ class User(CommonModel):
     password = db.Column(String(255), nullable=False)
     salt = db.Column(String(255))
 
-    # Relationship
-    roles = db.relationship("Role", secondary=roles_users, single_parent=True)
-
-    userinfo = db.relationship('UserInfo', uselist=False)
-    # userinfo_id = db.Column(String, db.ForeignKey('userinfo.id'), index=True)
-
-    # balance = db.relationship("Balance", cascade='all, delete-orphan')
-
-    # transaction = db.relationship("Transaction", cascade='all, delete-orphan')
-
-
-class UserInfo(CommonModel):
-    __tablename__ = 'userinfo'
     fullname = db.Column(String(255))
     email = db.Column(String(255))
     gender = db.Column(String(255))
     phone = db.Column(String(255))
     img = db.Column(String(255)) 
 
-
     # Relationship
-    # user = db.relationship("User", back_populates='userinfo', uselist=False)
-    user_id = db.Column(String, db.ForeignKey('user.id'), index=True)
+    roles = db.relationship("Role", secondary=roles_users, single_parent=True)
 
 
 
@@ -99,7 +84,7 @@ class Role(CommonModel):
 class Balance(CommonModel): 
     __tablename__ = 'balance'
     amount = db.Column(String(255))
-
+    is_current = db.Column(Boolean, index=True, default=False)
     # Relationship
     # user = db.relationship("User")
     user_id = db.Column(String, db.ForeignKey('user.id'), nullable=False, index=True)
